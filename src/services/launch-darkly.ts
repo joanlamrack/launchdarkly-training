@@ -9,8 +9,15 @@ export class LaunchDarklyService implements ILaunchDarklyService {
     constructor(
         private apiKey: string
     ) { 
-    } 
+        this.launchDarklyClient = LaunchDarklyClient.init(apiKey);
+    }
 
-    // implement the interface here
+    async getVariation(flagName: string, user: LDUser, defaultValue: boolean): Promise<boolean> {
+        if(this.launchDarklyClient.initialized()) {
+            await this.launchDarklyClient.waitForInitialization();
+        }
+
+        return this.launchDarklyClient.variation(flagName, user, defaultValue);
+    }
     
 }
